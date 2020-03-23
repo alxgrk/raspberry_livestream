@@ -2,7 +2,7 @@
 
 ## Disclaimer
 
-This fork uses the base repo as an inspiration. Maybe fundemental things will be changed here.
+This fork uses the base repo as an inspiration. Maybe fundamental things will be changed here.
 
 ## Hardware
 
@@ -30,16 +30,21 @@ sudo apt-get install ffmpeg supervisor avconv build-essential libpcre3 libpcre3-
 
 ### Build Nginx with RTMP module
 
-To stream our video to the web we use [Nginx](http://nginx.org/) with an [RTMP module](https://github.com/arut/nginx-rtmp-module). This module has to be compiled into Nginx, but you can simply use `build.sh`.
+To stream our video to the web we use [Nginx](http://nginx.org/) with an [RTMP module](https://github.com/arut/nginx-rtmp-module). This module has to be compiled into Nginx, but you can simply use:
+```bash
+./build.sh
+```
 
 ### Install this repo's content
 
-Do it by simply running `./install.sh -a <PI_ADDRESS> -n <STREAM_NAME>`
+Do it by simply running: 
+```bash
+./install.sh -a <PI_ADDRESS> -n <STREAM_NAME>
+```
 
 ### Run the systems!
 
-This will (re)start Nginx and the stream itself.
-
+This will (re)start Nginx and the stream itself:
 ```bash
 ./start.sh
 ```
