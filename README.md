@@ -1,31 +1,22 @@
 # Streaming live video from a webcam over RTMP using a Raspberry Pi and Nginx
 
+## Disclaimer
 
-![Live stream for foosball in action, much inception!](/livestream-working.jpg?raw=true "Live stream for foosball in action, much inception!")
-
-**Live stream for foosball in action, much inception!**
-
-- - - 
-
-Imagine you're in a shared office with a foosball table and many people in the office like to play foosball. Then sometimes when you want to play you'll make a trip down the stairs just to find out it's in use and you'll have to go up the stairs again. That's pretty sad, useless and a waste of time. That time should be spent in awesome projects like these.
-
-The fix is obvious: Hackaton! Get a Raspberry Pi, a webcam and stream the foosball table so you'll always know if it's free! There are also some additional bennefits, such as secretly analysing competitor tactics
-
-Because we ran into quite a few difficulties we decided to write a little how-to. Sharing is caring ;)
-
-If you find anything is missing, please create an issue [here](https://github.com/Tomtomgo/raspberry_livestream/issues)!
+This fork uses the base repo as an inspiration. Maybe fundemental things will be changed here.
 
 ## Hardware
 
-This is the hardware we used. You will probably have some other stuff... which should work as well.
+This is the hardware I used. You will probably have some other stuff... which should work as well.
 
-- RaspberryPi B+ with Raspbian installed
-- 8 GB SD card
-- Logitech C310 webcam
+- RaspberryPi B with Raspbian installed
+- 16 GB SD card
+- Waveshare Kamera (C), 5 MP Fixfokus
 - 2A power adapter
 - All these things connected appropriately
 
 ## Installing the necessary software
+
+*see https://github.com/arut/nginx-rtmp-module/wiki/Getting-started-with-nginx-rtmp for more detailed information*
 
 Everything here should be done on the Raspberry Pi (as opposed to on your computes) unless stated otherwise. 
 
@@ -34,61 +25,23 @@ Everything here should be done on the Raspberry Pi (as opposed to on your comput
 Some basic dependencies:
 
 ```bash
-sudo apt-get install ffmpeg supervisor
+sudo apt-get install ffmpeg supervisor avconv build-essential libpcre3 libpcre3-dev libssl-dev git zlib1g-dev
 ```
 
 ### Build Nginx with RTMP module
 
-To stream our video to the web we use [Nginx](http://nginx.org/) with an [RTMP module](https://github.com/arut/nginx-rtmp-module). This module has to be compiled into Nginx, so let's do it:
+To stream our video to the web we use [Nginx](http://nginx.org/) with an [RTMP module](https://github.com/arut/nginx-rtmp-module). This module has to be compiled into Nginx, but you can simply use `build.sh`.
 
-```bash
-cd /tmp
-wget https://github.com/arut/nginx-rtmp-module/archive/master.zip
-wget http://nginx.org/download/nginx-1.7.9.tar.gz
-tar -zxvf nginx-1.7.9.tar.gz
-unzip master.zip
+### Install this repo's content
 
-cd nginx-1.7.9
-./configure --add-module=/tmp/nginx-rtmp-module-master
-make # <- This takes a few minutes on a Raspberry Pi
-sudo make install
-```
-
-### Get the files!
-
-You can fork the entire repo, or clone to your computer:
-
-```bash
-git clone https://github.com/Tomtomgo/raspberry_livestream.git
-```
-
-### Edit `stream.sh` for your environment
-
-Replace \<STREAM_NAME\> and \<RASPBERRY_IP\> in `stream.sh` with suitable values for you. 
-
-### Copy files to Raspberry Pi
-
-From this folder on your machine:
-
-```bash
-scp -r ./ pi@<RASPBERRY_IP>:/home/pi
-```
-
-### Copy config files
-
-```bash
-cd ~
-sudo cp nginx.conf /usr/local/nginx/conf/nginx.conf
-cp stream.supervisor.conf /etc/supervisor/conf.d/stream.supervisor.conf 
-```
+Do it by simply running `./install.sh -a <PI_ADDRESS> -n <STREAM_NAME>`
 
 ### Run the systems!
 
 This will (re)start Nginx and the stream itself.
 
 ```bash
-sudo service supervisor stop
-sudo service supervisor start
+./start.sh
 ```
 
 ## Verify the stream
