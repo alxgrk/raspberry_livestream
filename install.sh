@@ -21,21 +21,38 @@ fi
 echo "Going to stream as '$STREAM_NAME' from '$PI_ADDRESS'"
 
 cat <<EOF > stream.sh
-#! /bin/bash
+#!/bin/bash
 
-# Run avconv to stream the webcam's video to the RTMP server.
+ffmpeg -f v4l2 `# system driver` \
+       -i /dev/video0 `# camera device` \
+       -preset ultrafast `# fastest encoding` \
+       -vcodec libx264 `# h264.1 encoder` \
+       -r 10 `# framerate in fps` \
+       -b:v 256k `# bitrate` \
+       -s 320x176 `# size: small` \
+       -f flv `# output flash video` \
+       -an `# no audio` \
+       -loglevel warning `# don't spam` \
+       "rtmp://$PI_ADDRESS/live/$STREAM_NAME" `# destination`
 
-avconv  -f video4linux2 \       # Webcam format goes in 
-        -s 320x176 \            # Small is big enough
-        -r "10" \               # Fixed framerate at 10fps, somehow this needs to be a string
-        -b 256k \               # Fixed bitrate
-        -i /dev/video0 \        # Webcam device
-        -vcodec libx264 \       # h264.1 video encoder
-        -preset ultrafast \     # Use the fastest encoding preset
-        -f flv \                # Flash video goes out
-        -an \                   # No audio!
-        'rtmp://$PI_ADDRESS/live/$STREAM_NAME'
+EOF
+chmod +x stream.sh
+
+cat <<EOF > livestream-supervisor.conf
+; The minimal Supervisord configuration for running the live stream.
+[program:serve]
+command=$(pwd)/stream.sh
+directory=$(pwd)
+autostart=true
+autorestart=true
+user=pi
+
+[program:nginx]
+command=/usr/local/nginx/sbin/nginx
+autostart=true
+autorestart=true
+user=root
 EOF
 
 sudo cp nginx.conf /usr/local/nginx/conf/nginx.conf
-#cp stream.supervisor.conf /etc/supervisor/conf.d/stream.supervisor.conf
+sudo cp livestream-supervisor.conf /etc/supervisor/conf.d/

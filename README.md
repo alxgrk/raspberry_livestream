@@ -49,6 +49,8 @@ This will (re)start Nginx and the stream itself:
 ./start.sh
 ```
 
+Note that due to supervisor the stream and nginx will be started on boot by default. The `start.sh` script is just for manually running the system.
+
 ## Verify the stream
 
 You can check that it's actually streaming by opening this URI in [VLC](http://www.videolan.org/vlc/index.html) on your computes:
@@ -89,23 +91,8 @@ Then to show the video you can do something like this (replace <THESE_THINGS>):
 </html>
 ```
 
-That should do it! Go fot it!
-
-## Adventures
-As mentioned, we ran into a little bit of trouble before it worked. Hereby a short summary what we tried and why it did not work;
-
-1. Stream to [bambuser.com](http://bambuser.com)
-
-   We never got the stream connected  at Bamuser. The RMTP-addresses were unclear and did not accepted the connections.
-  
-2. Stream to [twitch.tv](http://twitch.tv)
-
-   This did not worked as we got banned several times, because we were not streaming gaming content. Wierd! Foosball is the best sport ever.
-   
-3. Stream to [youtube.com](http://youtube.com)
-
-   This attempt almost worked, we had a few cases were the stram was received. But in the end YouTube did not accepted the low bitrate coming from the RasberryPi.
+That should do it!
 
 ## Credits
 
-Built at [Rockstart](http://rockstart.com) by [Sjoerd Huisman](https://github.com/shuisman) from [Congressus](https://www.congressus.nl/) and [Tom Aizenberg](https://github.com/Tomtomgo) from [Achieved](http://achieved.co).
+Originally built at [Rockstart](http://rockstart.com) by [Sjoerd Huisman](https://github.com/shuisman) from [Congressus](https://www.congressus.nl/) and [Tom Aizenberg](https://github.com/Tomtomgo) from [Achieved](http://achieved.co).
