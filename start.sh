@@ -7,4 +7,4 @@ sudo /usr/local/nginx/sbin/nginx
 
 sleep 2
 
-./stream.sh &
+./stream.sh

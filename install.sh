@@ -23,36 +23,16 @@ echo "Going to stream as '$STREAM_NAME' from '$PI_ADDRESS'"
 cat <<EOF > stream.sh
 #!/bin/bash
 
-ffmpeg -f v4l2 `# system driver` \
-       -i /dev/video0 `# camera device` \
-       -preset ultrafast `# fastest encoding` \
-       -vcodec libx264 `# h264.1 encoder` \
-       -r 10 `# framerate in fps` \
-       -b:v 256k `# bitrate` \
-       -s 320x176 `# size: small` \
-       -f flv `# output flash video` \
-       -an `# no audio` \
-       -loglevel warning `# don't spam` \
-       "rtmp://$PI_ADDRESS/live/$STREAM_NAME" `# destination`
+ffmpeg -f v4l2 `# use v4l2 driver` \
+	-i /dev/video0 `# use default camera` \
+	-preset ultrafast `# we need to be ultrafast` \
+	-b:v 1024k -s 960x720 `# drop bitrate a little in order to still get good fps higher resolution` \
+	-codec:v libx264 `# use H.264 encoding` \
+	-f flv `# output Flash Video` \
+	-an `# no audio` \
+	rtmp://$PI_ADDRESS/live/$STREAM_NAME
 
 EOF
 chmod +x stream.sh
 
-cat <<EOF > livestream-supervisor.conf
-; The minimal Supervisord configuration for running the live stream.
-[program:serve]
-command=$(pwd)/stream.sh
-directory=$(pwd)
-autostart=true
-autorestart=true
-user=pi
-
-[program:nginx]
-command=/usr/local/nginx/sbin/nginx
-autostart=true
-autorestart=true
-user=root
-EOF
-
 sudo cp nginx.conf /usr/local/nginx/conf/nginx.conf
-sudo cp livestream-supervisor.conf /etc/supervisor/conf.d/

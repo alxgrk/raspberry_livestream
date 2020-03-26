@@ -25,7 +25,7 @@ Everything here should be done on the Raspberry Pi (as opposed to on your comput
 Some basic dependencies:
 
 ```bash
-sudo apt-get install ffmpeg supervisor avconv build-essential libpcre3 libpcre3-dev libssl-dev git zlib1g-dev
+sudo apt-get install ffmpeg avconv build-essential libpcre3 libpcre3-dev libssl-dev git zlib1g-dev
 ```
 
 ### Build Nginx with RTMP module
