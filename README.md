@@ -1,4 +1,4 @@
-# Streaming live video from a webcam over RTMP using a Raspberry Pi and Nginx
+# Streaming live video from a webcam over RTMP using a Raspberry Pi, Nginx and Basic auth
 
 ## Disclaimer
 
@@ -25,7 +25,14 @@ Everything here should be done on the Raspberry Pi (as opposed to on your comput
 Some basic dependencies:
 
 ```bash
-sudo apt-get install ffmpeg avconv build-essential libpcre3 libpcre3-dev libssl-dev git zlib1g-dev
+sudo apt-get install apache2-utils ffmpeg curl avconv perl make build-essential libpcre3 libpcre3-dev libssl-dev git zlib1g-dev
+```
+
+#### Basic Auth
+
+Since I wanted at least a minimal level of security, I added Basic auth check on stream play. To generate users, you can simply use `createUsers.sh` like this:
+```bash
+./createUsers.sh user1 user2 user3 ...
 ```
 
 ### Build Nginx with RTMP module

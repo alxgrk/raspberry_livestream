@@ -35,4 +35,5 @@ ffmpeg -f v4l2 `# use v4l2 driver` \
 EOF
 chmod +x stream.sh
 
-sudo cp nginx.conf /usr/local/nginx/conf/nginx.conf
+sudo cp nginx.conf /usr/local/openresty/nginx/conf/
+sudo cp auth.html /usr/local/openresty/nginx/
