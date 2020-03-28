@@ -6,7 +6,7 @@ mkdir build
 cd build
 
 # get rtmp module
-git clone git://github.com/arut/nginx-rtmp-module.git
+git clone git://github.com/winshining/nginx-http-flv-module.git
 
 # build nginx
 OPENRESTY_VERSION=openresty-1.15.8.3
@@ -16,7 +16,7 @@ if [ ! -d $OPENRESTY_VERSION ]; then
 fi
 cd $OPENRESTY_VERSION
 
-./configure -j2 --with-pcre-jit --with-ipv6 --with-http_ssl_module --add-module=../nginx-rtmp-module --with-cc-opt="-Wimplicit-fallthrough=0"
+./configure -j2 --with-pcre-jit --with-ipv6 --with-http_ssl_module --add-module=../nginx-http-flv-module --with-cc-opt="-Wimplicit-fallthrough=0"
 make -j2
 sudo make install
 
