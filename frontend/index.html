@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/flv.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  </head>
+  <body>
+    <script type="text/javascript">
+
+      function startVideo(basicAuth) {      
+        if (flvjs.isSupported()) {
+          var videoElement = document.getElementById('videoElement');
+          videoElement.style.display = 'block';
+          var flvPlayer = flvjs.createPlayer({
+              type: 'flv',
+	      isLive: true,
+              url: 'https://+++DOMAIN+++/live?app=live&stream=pi-stream&basic_auth=' + basicAuth
+          });
+          flvPlayer.attachMediaElement(videoElement);
+          flvPlayer.load();
+          flvPlayer.play();
+        }
+      }
+
+      function onLoginClicked() {
+        var loginDiv = document.getElementById('login');
+        var usernameInput = document.getElementById('uname');
+        var passwordInput = document.getElementById('psw');
+
+        loginDiv.style.display = 'none';
+        var basicHash = btoa(usernameInput.value + ':' + passwordInput.value);
+	startVideo(basicHash);
+      }
+    </script>
+
+    <h1>Raspberry Pi Livestream</h1> 
+    <div id="login">
+      <div class="imgcontainer">
+        <img src="Raspi-logo.png" alt="Logo" class="avatar">
+      </div>
+
+      <div class="container">
+        <label for="uname"><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" name="uname" id="uname" required>
+
+        <label for="psw"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+
+        <button onclick="onLoginClicked()">Login</button>
+      </div>
+    </div>
+
+    <video id="videoElement" style="display: 'none';"></video>
+  </body>
+</html>

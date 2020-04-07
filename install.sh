@@ -2,38 +2,44 @@
 
 set -x
 
-while getopts ":a:n:" opt; do
+OPENRESTY_PATH=/usr/local/openresty
+
+while getopts ":d:" opt; do
   case $opt in
-    a) PI_ADDRESS="$OPTARG"
-    ;;
-    n) STREAM_NAME="$OPTARG"
+    d) DOMAIN="$OPTARG"
     ;;
     \?) echo "Invalid option -$OPTARG" >&2
     ;;
   esac
 done
 
-if [[ -z $PI_ADDRESS || -z $STREAM_NAME ]]; then
-	echo "Please set '-a' for the Pi's address and '-n' for the stream's name"
+if [[ -z $DOMAIN ]]; then
+	echo "Please set '-d' for the Pi's domain name."
 	exit 1
 fi
 
-echo "Going to stream as '$STREAM_NAME' from '$PI_ADDRESS'"
+function resolveDomain() {
+	for f in $1 
+	do 
+		cat $f | sed "s/+++DOMAIN+++/$DOMAIN/g" | sudo tee $2/${f##*/} > /dev/null
+	done
+}
+resolveDomain nginx.conf $OPENRESTY_PATH/nginx/conf/
+resolveDomain "frontend/*" $OPENRESTY_PATH/nginx/
 
-cat <<EOF > stream.sh
-#!/bin/bash
 
-ffmpeg -f v4l2 `# use v4l2 driver` \
-	-i /dev/video0 `# use default camera` \
-	-preset ultrafast `# we need to be ultrafast` \
-	-b:v 1024k -s 960x720 `# drop bitrate a little in order to still get good fps higher resolution` \
-	-codec:v libx264 `# use H.264 encoding` \
-	-f flv `# output Flash Video` \
-	-an `# no audio` \
-	rtmp://$PI_ADDRESS/live/$STREAM_NAME
+# certbot conf
+if [[ ! -e $OPENRESTY_PATH/certbot/.certbot-ran ]]
+then
+	sudo mkdir -p $OPENRESTY_PATH/certbot/conf
+	curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf | sudo tee $OPENRESTY_PATH/certbot/conf/options-ssl-nginx.conf > /dev/null
+	curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem | sudo tee $OPENRESTY_PATH/certbot/conf/ssl-dhparams.pem > /dev/null
 
-EOF
-chmod +x stream.sh
-
-sudo cp nginx.conf /usr/local/openresty/nginx/conf/
-sudo cp auth.html /usr/local/openresty/nginx/
+	# Creating dummy certificate for your domain ...
+	CERT_PATH="/etc/letsencrypt/live/$DOMAIN"
+	sudo mkdir -p $CERT_PATH
+	sudo openssl req -x509 -nodes -newkey rsa:4096 -days 1\
+		-keyout "$CERT_PATH/privkey.pem" \
+		-out "$CERT_PATH/fullchain.pem" \
+		-subj "/CN=localhost"
+fi
