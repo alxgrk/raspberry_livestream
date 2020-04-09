@@ -8,7 +8,6 @@
     <script type="text/javascript">
 
       function startVideo(basicAuth) {      
-        if (flvjs.isSupported()) {
           var videoElement = document.getElementById('videoElement');
           videoElement.style.display = 'block';
           var flvPlayer = flvjs.createPlayer({
@@ -17,23 +16,55 @@
               url: 'https://+++DOMAIN+++/live?app=live&stream=pi-stream&basic_auth=' + basicAuth
           });
           flvPlayer.attachMediaElement(videoElement);
+          var title = document.getElementById('title');
+          title.innerHTML = 'Loading...';
           flvPlayer.load();
-          flvPlayer.play();
-        }
+
+          flvPlayer.on(flvjs.Events.ERROR, (e) => {
+            title.innerHTML = 'Playback error: ' + JSON.stringify(e);
+	  });
+
+          flvPlayer.play()
+            .then(() => {
+              title.innerHTML = 'Raspberry Pi Livestream';
+            });
       }
 
       function onLoginClicked() {
-        var loginDiv = document.getElementById('login');
-        var usernameInput = document.getElementById('uname');
-        var passwordInput = document.getElementById('psw');
+        if (flvjs.isSupported()) {
+          var loginDiv = document.getElementById('login');
+          var usernameInput = document.getElementById('uname');
+          var passwordInput = document.getElementById('psw');
 
-        loginDiv.style.display = 'none';
-        var basicHash = btoa(usernameInput.value + ':' + passwordInput.value);
-	startVideo(basicHash);
+          var basicHash = btoa(usernameInput.value + ':' + passwordInput.value);
+          fetch('https://+++DOMAIN+++/auth.html', {
+            headers: { 'Authorization': 'Basic ' + basicHash } 
+          })
+          .then((r) => {
+            if (r.ok) {
+              loginDiv.style.display = 'none';
+              startVideo(basicHash);
+	    } else {
+              var title = document.getElementById('title');
+              title.innerHTML = 'Wrong credentials';
+
+              var loginBtn = document.getElementById('loginBtn');
+              loginBtn.classList.toggle('jiggle');
+              setTimeout(() => {
+                title.innerHTML = 'Raspberry Pi Livestream';
+                loginBtn.classList.toggle('jiggle');
+              }, 1000);
+            }
+          });
+	} else {
+          document.getElementById('title').innerHTML = 'Browser not supported...';
+          loginDiv.style.display = 'none';
+        }
+
       }
     </script>
 
-    <h1>Raspberry Pi Livestream</h1> 
+    <h1 id="title">Raspberry Pi Livestream</h1> 
     <div id="login">
       <div class="imgcontainer">
         <img src="Raspi-logo.png" alt="Logo" class="avatar">
@@ -46,7 +77,7 @@
         <label for="psw"><b>Password</b></label>
         <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
 
-        <button onclick="onLoginClicked()">Login</button>
+        <button onclick="onLoginClicked()" id="loginBtn">Login</button>
       </div>
     </div>
 

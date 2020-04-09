@@ -72,3 +72,36 @@ img.avatar {
   padding: 16px;
 }
 
+/* error animation */
+.jiggle {
+    -webkit-animation: jiggle 0.2s 4;
+    -moz-animation-duration: 0.2s;
+    -moz-animation-name: jiggle;
+    -moz-animation-iteration-count: 4;
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+}
+
+@-moz-keyframes jiggle {
+    0% {
+        -moz-transform: rotate(-1deg);
+    }
+    50% {
+        -moz-transform: rotate(1deg);
+    }
+    100% {
+        -moz-transform: rotate(0deg);
+    }
+}
+
+@-webkit-keyframes jiggle {
+    0% {
+        -webkit-transform: rotate(-1deg);
+        }
+    50% {
+        -webkit-transform: rotate(1deg);
+    }
+    100% {
+        -moz-transform: rotate(0deg);
+    }
+}
