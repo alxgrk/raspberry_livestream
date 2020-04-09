@@ -1,6 +1,7 @@
 #!/bin/bash
 
-HTPASSWD_FILE=/usr/local/openresty/nginx/conf/.htpasswd
+HTPASSWD_FILE=/usr/local/openresty/conf/.htpasswd
+sudo mkdir -p /usr/local/openresty/conf
 
 for user in "$@"
 do
