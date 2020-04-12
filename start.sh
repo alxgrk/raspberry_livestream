@@ -25,8 +25,6 @@ trap 'stop_nginx' SIGINT
 stop_nginx
 sudo $OPENRESTY_PATH/bin/openresty
 
-sleep 2
-
 # setup ssl
 CERTBOT_PATH=$OPENRESTY_PATH/certbot
 if [[ ! -e $CERTBOT_PATH/.certbot-ran ]]
@@ -42,4 +40,5 @@ then
 	sudo touch $CERTBOT_PATH/.certbot-ran
 fi
 
+(./updateConnectedClients.sh) &
 ./stream.sh

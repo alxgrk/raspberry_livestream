@@ -18,14 +18,17 @@ if [[ -z $DOMAIN ]]; then
 	exit 1
 fi
 
-function resolveDomain() {
+function resolveTemplates() {
 	for f in $1 
 	do 
-		cat $f | sed "s/+++DOMAIN+++/$DOMAIN/g" | sudo tee $2/${f##*/} > /dev/null
+		cat $f \
+		| sed "s/+++DOMAIN+++/$DOMAIN/g" \
+		| sed "s|+++CLIENTS_HTML+++|<h3>no clients connected</h3>|g" \
+		| sudo tee $2/${f##*/} > /dev/null
 	done
 }
-resolveDomain nginx.conf $OPENRESTY_PATH/nginx/conf/
-resolveDomain "frontend/*" $OPENRESTY_PATH/nginx/
+resolveTemplates nginx.conf $OPENRESTY_PATH/nginx/conf/
+resolveTemplates "frontend/*" $OPENRESTY_PATH/nginx/
 
 
 # certbot conf
