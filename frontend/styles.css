@@ -6,13 +6,18 @@ body {
   text-align: center;
   background-color: #332211;
   min-height: 70vh;
+
+  color: white;
 }
 
 h1 {
   margin: 2vw 3vw 3vw 3vw;
   font-size: 8vw;
-  color: white;
 }
+h3 {
+  font-size: 3vw;
+}
+
 
 video { 
   max-width: 90%;
@@ -21,11 +26,6 @@ video {
 /* Bordered div */
 .login {
   border: 3px solid #f1f1f1;
-}
-
-/* Input labels */
-label {
-  color: white;
 }
 
 /* Full-width inputs */
@@ -40,7 +40,7 @@ input[type=password] {
 }
 
 /* Set a style for all buttons */
-button {
+input[type=submit] {
   background-color: #4CAF50;
   color: white;
   padding: 14px 20px;

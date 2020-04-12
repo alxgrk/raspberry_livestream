@@ -66,19 +66,21 @@
 
     <h1 id="title">Raspberry Pi Livestream</h1> 
     <div id="login">
-      <div class="imgcontainer">
-        <img src="Raspi-logo.png" alt="Logo" class="avatar">
-      </div>
+      <form onsubmit="onLoginClicked(); return false;">
+        <div class="imgcontainer">
+          <img src="Raspi-logo.png" alt="Logo" class="avatar">
+        </div>
 
-      <div class="container">
-        <label for="uname"><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="uname" id="uname" required>
+        <div class="container">
+          <label for="uname"><b>Username</b></label>
+          <input type="text" placeholder="Enter Username" name="uname" id="uname" required>
 
-        <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+          <label for="psw"><b>Password</b></label>
+          <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
 
-        <button onclick="onLoginClicked()" id="loginBtn">Login</button>
-      </div>
+	  <input type="submit" value="Login">
+        </div>
+      </form>
     </div>
 
     <video id="videoElement" style="display: 'none';"></video>
